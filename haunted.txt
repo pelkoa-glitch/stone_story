@@ -1,0 +1,130 @@
+// usable commands
+// foe tag 
+>`0,10,@foe@
+// buffs string 
+>`0,10,@buffs@
+
+var CA = import UI/ClickAbilities
+
+?item.left.state = 3
+    equipL star
+    equipL @item.left@
+?item.right.state = 3
+    equipR fissure
+    equip @item.right@
+
+
+func CanUse(weap)
+    return item.GetCooldown(weap) <= 0 & item.CanActivate()
+
+func Use(weap)
+    CA.UseR(weap)
+
+func InRange(num, min, max)
+    return num >= min & num <= max
+    
+func Dash()
+    var FD = foe.distance
+    
+    ?FD > 6 & CanUse("quarterstaff")
+        equip quarterstaff
+        activate R
+        return false
+    :?InRange(FD, 11, 16)
+        ?CanUse("bash")
+            equip bashing shield
+        :?CanUse("dash")
+            equip dashing shield
+        :
+            return true
+        return false
+    :
+        return true
+
+func Dash2()
+    var FD = foe.distance
+    
+    ?InRange(FD, 11, 16)
+        ?CanUse("bash")
+            Use("bash")
+        :?CanUse("dash")
+            Use("dash")
+        :
+            return true
+        return false
+    :
+        return true
+
+func MoonJuggle(Weap1, Weap2)
+    ?totaltime % 4 = 0
+        equipL @Weap2@
+        equipR @Weap1@
+    ?totaltime % 4 = 1
+        equipL moondial
+        equipR @Weap1@
+    ?totaltime % 4 = 2
+        equipR @Weap1@
+        equipL @Weap2@
+    ?totaltime % 4 = 3
+        equipL moondial
+        equipR @Weap2@
+
+
+// crypt 
+var CryptAlive = false
+var PreviousKi = res.ki
+?foe = "big_tomb"
+    CryptAlive = true 
+    PreviousKi = res.ki
+?PreviousKi < res.ki
+    CryptAlive = false
+
+
+?CA.RunNoDisplay()
+    ?buffs.GetTime("berserk") < 300
+        ?item.poton ! empty
+            activate P
+        equipL vigor wand -reset 
+        equip mask
+
+
+    :?pickup.distance < 10
+        equipL triskelion
+        equipR star
+
+    :?foe.distance > 23
+        ?CanUse("quarterstaff")
+            equip quarterstaff
+            activate R
+        :?summon.count = 0 & CanUse("talisman_fire")
+            Use("fire talsman")
+        :
+            equipL triskelion
+            equipR compound shield
+
+
+
+    :?CryptAlive
+        equip repeating crossbow
+
+    :?foe = "phase1"
+        ?Dash2()
+            MoonJuggle("vigor sword", "aether sword")
+
+    :?foe = "phase2"
+        ?ai.paused
+            ?CanUse("quarterstaff")
+                equip quarterstaff
+                activate R
+            :?foe.distance < 12 & CanUse("bardiche")
+                Use("bardiche")
+            :?CanUse("heavy_nammer")
+                Use("heavy_nammer") //damage one
+        :
+            MoonJuggle("vigor sword", "aether sword")
+    :?Dash()
+        ?foe = "boo"
+            equipL vigor wand
+            equipR aether wand 
+        :
+            equip bardiche
