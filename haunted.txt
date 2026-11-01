@@ -84,9 +84,8 @@ var PreviousKi = res.ki
     ?buffs.GetTime("berserk") < 300
         ?item.poton ! empty
             activate P
-        equipL vigor wand -reset 
+        equipL vigor wand // -reset Reset Wand  
         equip mask
-
 
     :?pickup.distance < 10
         equipL triskelion
@@ -103,13 +102,12 @@ var PreviousKi = res.ki
             equipR compound shield
 
 
-
     :?CryptAlive
         equip repeating crossbow
 
     :?foe = "phase1"
         ?Dash2()
-            MoonJuggle("vigor sword", "aether sword")
+            MoonJuggle("vigor sword -dL", "vigor sword -D")
 
     :?foe = "phase2"
         ?ai.paused
@@ -118,13 +116,13 @@ var PreviousKi = res.ki
                 activate R
             :?foe.distance < 12 & CanUse("bardiche")
                 Use("bardiche")
-            :?CanUse("heavy_nammer")
-                Use("heavy_nammer") //damage one
+            :?CanUse("heavy_hammer")
+                Use("heavy_hammer") //damage one
         :
-            MoonJuggle("vigor sword", "aether sword")
+            MoonJuggle("vigor sword -dL", "vigor sword -dL")
     :?Dash()
         ?foe = "boo"
-            equipL vigor wand
-            equipR aether wand 
+            equipL "vigor wand -D"
+            equipR "vigor wand -dL" 
         :
             equip bardiche
