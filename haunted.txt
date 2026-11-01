@@ -1,3 +1,11 @@
+// cat's head
+>o-1,-1,#ffcccc,^
+>o0,-1,#888888,~
+>o1,-1,#ffcccc,^
+>o-1,0,#ffcccc,=
+>o3,0,#888888,<
+>o-3,0,#888888,>
+
 // usable commands
 // foe tag 
 // >`0,10,@foe@
@@ -100,11 +108,8 @@ var PreviousKi = res.ki
         equip repeating crossbow
 
     :?foe = "phase1"
-        ?buffs.GetTime("berserk") < 300
-            ?item.potion ! empty
-                activate P
         ?Dash2()
-            MoonJuggle("vigor sword +13", "vigor sword +10", moon_del)
+            MoonJuggle("vigor sword +13", "vigor sword +10")
 
     :?foe = "phase2"
         ?ai.paused
@@ -115,11 +120,14 @@ var PreviousKi = res.ki
                 Use("bardiche")
             :?CanUse("heavy_hammer")
                 Use("heavy_hammer") //damage one
-        :
-            MoonJuggle("vigor sword +13", "vigor sword +10", moon_del)
+        :   
+            ?buffs.GetTime("berserk") < 300
+                ?item.potion ! empty
+                    activate P
+            MoonJuggle("vigor sword +13", "vigor sword +10")
     :?Dash()
         ?foe = "boo"
-            equipL "aether wand +11"
-            equipR "vigor wand +10" 
+            equipL aether wand +11
+            equipR vigor wand +10 
         :
             equip bardiche
