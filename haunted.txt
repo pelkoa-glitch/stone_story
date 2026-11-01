@@ -81,11 +81,11 @@ var PreviousKi = res.ki
 
 
 ?CA.RunNoDisplay()
-    ?buffs.GetTime("berserk") < 300
-        ?item.poton ! empty
-            activate P
-        equipL vigor wand // -reset Reset Wand  
-        equip mask
+    // ?buffs.GetTime("berserk") < 300
+    //     ?item.potion ! empty
+    //         activate P
+    //     equipL vigor wand // -reset Reset Wand  
+    //     equip mask
 
     :?pickup.distance < 10
         equipL triskelion
@@ -107,7 +107,7 @@ var PreviousKi = res.ki
 
     :?foe = "phase1"
         ?Dash2()
-            MoonJuggle("vigor sword -dL", "vigor sword -D")
+            MoonJuggle("vigor sword +13 -dL", "vigor sword +10 -dL")
 
     :?foe = "phase2"
         ?ai.paused
@@ -119,10 +119,10 @@ var PreviousKi = res.ki
             :?CanUse("heavy_hammer")
                 Use("heavy_hammer") //damage one
         :
-            MoonJuggle("vigor sword -dL", "vigor sword -dL")
+            MoonJuggle("vigor sword +13 -dL", "vigor sword +10 -dL")
     :?Dash()
         ?foe = "boo"
-            equipL "vigor wand -D"
-            equipR "vigor wand -dL" 
+            equipL "aether wand +11 -dU"
+            equipR "vigor wand +10 -D" 
         :
             equip bardiche
