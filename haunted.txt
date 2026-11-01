@@ -1,11 +1,11 @@
 // usable commands
 // foe tag 
->`0,10,@foe@
+// >`0,10,@foe@
 // buffs string 
 >`0,10,@buffs@
 
 var CA = import UI/ClickAbilities
-
+var moon_del = 5 
 ?item.left.state = 3
     equipL star
     equipL @item.left@
@@ -55,17 +55,17 @@ func Dash2()
     :
         return true
 
-func MoonJuggle(Weap1, Weap2)
-    ?totaltime % 4 = 0
+func MoonJuggle(Weap1, Weap2, moon_del)
+    ?totaltime % moon_del = 0
         equipL @Weap2@
         equipR @Weap1@
-    ?totaltime % 4 = 1
+    ?totaltime % moon_del = 1
         equipL moondial
         equipR @Weap1@
-    ?totaltime % 4 = 2
+    ?totaltime % moon_del = 2
         equipR @Weap1@
         equipL @Weap2@
-    ?totaltime % 4 = 3
+    ?totaltime % moon_del = 3
         equipL moondial
         equipR @Weap2@
 
@@ -81,7 +81,7 @@ var PreviousKi = res.ki
 
 
 ?CA.RunNoDisplay()
-    :?pickup.distance < 10
+    ?pickup.distance < 10
         equipL triskelion
         equipR star
 
@@ -104,7 +104,7 @@ var PreviousKi = res.ki
             ?item.potion ! empty
                 activate P
         ?Dash2()
-            MoonJuggle("vigor sword +13 -dL", "vigor sword +10 -dL")
+            MoonJuggle("vigor sword +13", "vigor sword +10", moon_del)
 
     :?foe = "phase2"
         ?ai.paused
@@ -116,10 +116,10 @@ var PreviousKi = res.ki
             :?CanUse("heavy_hammer")
                 Use("heavy_hammer") //damage one
         :
-            MoonJuggle("vigor sword +13 -dL", "vigor sword +10 -dL")
+            MoonJuggle("vigor sword +13", "vigor sword +10", moon_del)
     :?Dash()
         ?foe = "boo"
-            equipL "aether wand +11 -dU"
-            equipR "vigor wand +10 -D" 
+            equipL "aether wand +11"
+            equipR "vigor wand +10" 
         :
             equip bardiche
