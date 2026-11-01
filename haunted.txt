@@ -109,7 +109,8 @@ var PreviousKi = res.ki
 
     :?foe = "phase1"
         ?Dash2()
-            MoonJuggle("vigor sword +13", "vigor sword +10")
+            equipL vigor sword +13
+            equipR vigor sword +10
 
     :?foe = "phase2"
         ?ai.paused
