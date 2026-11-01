@@ -81,12 +81,6 @@ var PreviousKi = res.ki
 
 
 ?CA.RunNoDisplay()
-    // ?buffs.GetTime("berserk") < 300
-    //     ?item.potion ! empty
-    //         activate P
-    //     equipL vigor wand // -reset Reset Wand  
-    //     equip mask
-
     :?pickup.distance < 10
         equipL triskelion
         equipR star
@@ -106,6 +100,9 @@ var PreviousKi = res.ki
         equip repeating crossbow
 
     :?foe = "phase1"
+        ?buffs.GetTime("berserk") < 300
+            ?item.potion ! empty
+                activate P
         ?Dash2()
             MoonJuggle("vigor sword +13 -dL", "vigor sword +10 -dL")
 
