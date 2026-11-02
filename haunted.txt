@@ -7,13 +7,15 @@
 >o-3,0,#888888,>
 
 // usable commands
+// foe state tracker
+// import UI/FoeStateTracker
 // foe tag 
 // >`0,10,@foe@
 // buffs string 
 >`0,10,@buffs@
 
 var CA = import UI/ClickAbilities
-var moon_del = 5 
+
 ?item.left.state = 3
     equipL star
     equipL @item.left@
@@ -63,19 +65,35 @@ func Dash2()
     :
         return true
 
-func MoonJuggle(Weap1, Weap2, moon_del)
-    ?totaltime % moon_del = 0
+func MoonJuggle(Weap1, Weap2)
+    ?totaltime % 4 = 0
         equipL @Weap2@
         equipR @Weap1@
-    ?totaltime % moon_del = 1
+    ?totaltime % 4 = 1
         equipL moondial
         equipR @Weap1@
-    ?totaltime % moon_del = 2
+    ?totaltime % 4 = 2
         equipR @Weap1@
         equipL @Weap2@
-    ?totaltime % moon_del = 3
+    ?totaltime % 4 = 3
         equipL moondial
         equipR @Weap2@
+
+func WidePalasBlade()
+    var frame = 0
+    var cdb = 0
+    cdb = item.GetCooldown(＂blade＂)
+    ? cdb <= 0 & frame <= 0
+    frame = 1
+    screen.Next()
+    : ? frame > 0
+    frame++
+    ? frame >= 30
+        frame = 0
+        equip Blade
+        activate R
+        screen.ResetOffset()
+        return
 
 
 // crypt 
@@ -103,32 +121,58 @@ var PreviousKi = res.ki
             equipL triskelion
             equipR compound shield
 
+    :?loc = "haunted"
+        :?CryptAlive
+            equip repeating crossbow
 
-    :?CryptAlive
-        equip repeating crossbow
+        :?foe = "phase1"
+            ?Dash2()
+                equipL vigor sword +14
+                equipR vigor sword +15
 
-    :?foe = "phase1"
-        ?Dash2()
-            equipL vigor sword +13
-            equipR vigor sword +10
-
-    :?foe = "phase2"
-        ?ai.paused
-            ?CanUse("quarterstaff")
-                equip quarterstaff
-                activate R
-            :?foe.distance < 12 & CanUse("bardiche")
-                Use("bardiche")
+        :?foe = "phase2"
+            ?ai.paused
+                ?CanUse("quarterstaff")
+                    equip quarterstaff
+                    activate R
+                :?foe.distance < 12 & CanUse("bardiche")
+                    Use("bardiche")
+                :?CanUse("heavy_hammer")
+                    Use("heavy_hammer") // raw damage one
+            :   
+                ?buffs.GetTime("berserk") < 300
+                    ?item.potion ! empty
+                        activate P
+                MoonJuggle("vigor sword +14 ",
+                ^"vigor sword +15 ")
+        :?Dash()
+            ?foe = "boo"
+                equipL aether wand +11
+                equipR vigor wand +10
+            :?foe.count > 6
+                WidePalasBlade()
+            :
+                equip bardiche
+    
+    :?loc = "boiling"
+        ?foe = "boss"
+            ?ai.paused
+                equipR compound shield
+            :?foe.state = 32 & foe.time = 33
+                equipR mind
             :?CanUse("heavy_hammer")
-                Use("heavy_hammer") //damage one
-        :   
-            ?buffs.GetTime("berserk") < 300
-                ?item.potion ! empty
-                    activate P
-            MoonJuggle("vigor sword +13", "vigor sword +10")
-    :?Dash()
-        ?foe = "boo"
-            equipL aether wand +11
-            equipR vigor wand +10 
+                Use("heavy_hammer")
+            :?foe.state = 33
+                ?Dash2()
+                    ?buffs.GetTime("berserk") < 300
+                        ?item.potion ! empty
+                            activate P
+                    equip heavy hammer
+            :
+                equip aether crossbow
         :
-            equip bardiche
+            ?Dash2()
+                ?foe.count > 6
+                    WidePalasBlade()
+                :
+                    equip repeating crossbow
