@@ -79,22 +79,21 @@ func MoonJuggle(Weap1, Weap2)
         equipL moondial
         equipR @Weap2@
 
-func WidePalasBlade()
-    var frame = 0
-    var cdb = 0
-    cdb = item.GetCooldown(＂blade＂)
-    ? cdb <= 0 & frame <= 0
+//
+var frame = 0
+var blade_cooldown = 0
+blade_cooldown = item.GetCooldown("blade")
+?blade_cooldown <= 0 & frame <= 0
     frame = 1
     screen.Next()
-    : ? frame > 0
+:?frame > 0
     frame++
-    ? frame >= 30
+    ?frame >= 30
         frame = 0
-        equip Blade
+        equip blade
         activate R
         screen.ResetOffset()
         return
-
 
 // crypt 
 var CryptAlive = false
@@ -149,8 +148,6 @@ var PreviousKi = res.ki
             ?foe = "boo"
                 equipL aether wand +11
                 equipR vigor wand +10
-            :?foe.count > 6
-                WidePalasBlade()
             :
                 equip bardiche
     
@@ -172,7 +169,4 @@ var PreviousKi = res.ki
                 equip aether crossbow
         :
             ?Dash2()
-                ?foe.count > 6
-                    WidePalasBlade()
-                :
-                    equip repeating crossbow
+                equip repeating crossbow
