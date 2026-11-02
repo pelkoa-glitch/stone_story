@@ -79,23 +79,29 @@ func MoonJuggle(Weap1, Weap2)
         equipL moondial
         equipR @Weap2@
 
-//
-var frame = 0
-var blade_cooldown = 0
-blade_cooldown = item.GetCooldown("blade")
-?blade_cooldown <= 0 & frame <= 0
-    frame = 1
-    screen.Next()
-:?frame > 0
-    frame++
-    ?frame >= 30
-        frame = 0
-        equip blade
-        activate R
-        screen.ResetOffset()
-        return
+var blade_frame = 0
 
-// crypt 
+func DoBladeScroll()
+    var cdb = item.GetCooldown("blade")
+    ? cdb <= 0 & blade_frame <= 0
+        blade_frame = 1
+        screen.Next()
+        return true 
+    
+
+    : ? blade_frame > 0
+        blade_frame++
+        ? blade_frame >= 30
+            blade_frame = 0
+            equip blade
+            activate R
+            screen.ResetOffset()
+            return true 
+        return true 
+        
+    return false 
+
+
 var CryptAlive = false
 var PreviousKi = res.ki
 ?foe = "big_tomb"
@@ -121,7 +127,7 @@ var PreviousKi = res.ki
             equipR compound shield
 
     :?loc = "haunted"
-        :?CryptAlive
+        ?CryptAlive
             equip repeating crossbow
 
         :?foe = "phase1"
@@ -142,12 +148,17 @@ var PreviousKi = res.ki
                 ?buffs.GetTime("berserk") < 300
                     ?item.potion ! empty
                         activate P
-                MoonJuggle("vigor sword +14 ",
-                ^"vigor sword +15 ")
+                MoonJuggle("vigor sword +14", "vigor sword +15")
+                
         :?Dash()
             ?foe = "boo"
                 equipL aether wand +11
                 equipR vigor wand +10
+            
+            :?foe.count > 6
+                ?DoBladeScroll()
+                    return 
+            
             :
                 equip bardiche
     
@@ -169,4 +180,8 @@ var PreviousKi = res.ki
                 equip aether crossbow
         :
             ?Dash2()
-                equip repeating crossbow
+                ?foe.count > 6
+                    ?DoBladeScroll()
+                        return
+                :
+                    equip repeating crossbow
