@@ -12,7 +12,7 @@
 // foe tag 
 // >`0,10,@foe@
 // buffs string 
->`0,10,@buffs.string@
+//>`0,10,@buffs.string@
 
 var CA = import UI/ClickAbilities
 
@@ -36,14 +36,14 @@ func InRange(num, min, max)
 func Dash()
     var FD = foe.distance
     
-    ?FD > 6 & CanUse("quarterstaff")
+    ?FD > 6 & CanUse(＂quarterstaff＂)
         equip quarterstaff
         activate R
         return false
     :?InRange(FD, 11, 16)
-        ?CanUse("bash")
+        ?CanUse(＂bash＂)
             equip bashing shield
-        :?CanUse("dash")
+        :?CanUse(＂dash＂)
             equip dashing shield
         :
             return true
@@ -55,10 +55,10 @@ func Dash2()
     var FD = foe.distance
     
     ?InRange(FD, 11, 16)
-        ?CanUse("bash")
-            Use("bash")
-        :?CanUse("dash")
-            Use("dash")
+        ?CanUse(＂bash＂)
+            Use(＂bash＂)
+        :?CanUse(＂dash＂)
+            Use(＂dash＂)
         :
             return true
         return false
@@ -82,7 +82,7 @@ func MoonJuggle(Weap1, Weap2)
 var blade_frame = 0
 
 func DoBladeScroll()
-    var cdb = item.GetCooldown("blade")
+    var cdb = item.GetCooldown(＂blade＂)
     ? cdb <= 0 & blade_frame <= 0
         blade_frame = 1
         screen.Next()
@@ -104,18 +104,18 @@ func DoBladeScroll()
 
 var CryptAlive = false
 var PreviousKi = res.ki
-?foe = "big_tomb"
+?foe = ＂big_tomb＂
     CryptAlive = true 
     PreviousKi = res.ki
 ?PreviousKi < res.ki
     CryptAlive = false
 
 
-?buffs.GetTime("berserk") < 300
-    ?item.potion ! empty
-        activate P
-    equipL vigor wand +10
-    equipR mask
+//?buffs.GetTime(＂berserk＂) < 300
+//    ?item.potion ! empty
+//        activate P
+//    equipL vigor wand +10
+//    equipR mask
 
 
 ?CA.RunNoDisplay()
@@ -124,42 +124,44 @@ var PreviousKi = res.ki
         equipR star
 
     :?foe.distance > 23
-        ?CanUse("quarterstaff")
+        ?CanUse(＂quarterstaff＂)
             equip quarterstaff
             activate R
-        :?summon.count = 0 & CanUse("talisman_fire")
-            Use("fire talsman")
+        :?summon.count = 0 & CanUse(＂talisman_fire＂)
+            Use(＂fire talsman＂)
         :
-            equipL triskelion
+            equipL trisk
             equipR compound shield
 
-    :?loc = "haunted"
+    :?loc = ＂haunted＂
         ?CryptAlive
             equip repeating crossbow
 
-        :?foe = "phase1"
+        :?foe = ＂phase1＂
             ?Dash2()
+                ?CanUse(＂mask＂)
+                    Use(＂mask＂)
                 equipL vigor sword +14
                 equipR vigor sword +15
 
-        :?foe = "phase2"
+        :?foe = ＂phase2＂
             ?ai.paused
-                ?CanUse("quarterstaff")
+                ?CanUse(＂quarterstaff＂)
                     equip quarterstaff
                     activate R
-                :?foe.distance < 12 & CanUse("bardiche")
-                    Use("bardiche")
-                :?CanUse("heavy_hammer")
-                    Use("heavy_hammer") // raw damage one
+                :?foe.distance < 12 & CanUse(＂bardiche＂)
+                    Use(＂bardiche＂)
+                :?CanUse(＂heavy_hammer＂)
+                    Use(＂heavy_hammer＂) // raw damage one
             :   
-                // ?buffs.GetTime("berserk") < 300
-                //     ?item.potion ! empty
-                //         activate P
+                ?buffs.GetTime(＂berserk＂) < 30
+                    ?item.potion ! empty
+                        activate P
                 MoonJuggle(
-                ^"vigor sword +14",
-                ^"vigor sword +15")
+                ^＂vigor sword +14＂,
+                ^＂vigor sword +15＂)
         :?Dash()
-            ?foe = "boo"
+            ?foe = ＂boo＂
                 equipL aether wand +11
                 equipR vigor wand +10
             
@@ -170,31 +172,29 @@ var PreviousKi = res.ki
             :
                 equip bardiche
 
-    :?loc = "boiling"
-        ?foe = "boss"
+    :?loc = ＂boiling＂
+        ?foe = ＂bronze_guardian＂
             ?ai.paused
                 equipR compound shield
             :?foe.state = 32 & foe.time = 33
                 equipR mind
-            :?CanUse("heavy_hammer")
-                Use("heavy_hammer")
+            :?CanUse(＂heavy_hammer＂)
+                Use(＂heavy_hammer＂)
             :?foe.state = 33
                 ?Dash2()
-                    ?buffs.GetTime("berserk") < 300
+                    ?buffs.GetTime(＂berserk＂) < 300
                         ?item.potion ! empty
-                            activate P
-                    :?CanUse("mask")
-                        Use("mask")
+                            activate P          
                     equip heavy hammer
-            :?foe = "explode" //mine cart
-                equipL triskelion
-                ?foe.distance < 17
-                    ?foe.distance > 10
-                        equip dash
-                    :
-                        equipR mind
             :
                 equip aether crossbow
+        :?foe = ＂explode＂ //mine cart
+            equipL triskelion
+            ?foe.distance < 17
+                ?foe.distance > 10
+                    equip dash
+                :
+                    equipR mind
 
         :
             ?foe.count > 6
