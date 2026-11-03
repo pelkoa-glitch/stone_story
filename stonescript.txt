@@ -12,7 +12,7 @@
 // foe tag 
 // >`0,10,@foe@
 // buffs string 
->`0,10,@buffs@
+>`0,10,@buffs.string@
 
 var CA = import UI/ClickAbilities
 
@@ -111,6 +111,13 @@ var PreviousKi = res.ki
     CryptAlive = false
 
 
+?buffs.GetTime("berserk") < 300
+    ?item.potion ! empty
+        activate P
+    equipL vigor wand +10
+    equipR mask
+
+
 ?CA.RunNoDisplay()
     ?pickup.distance < 10
         equipL triskelion
@@ -145,11 +152,12 @@ var PreviousKi = res.ki
                 :?CanUse("heavy_hammer")
                     Use("heavy_hammer") // raw damage one
             :   
-                ?buffs.GetTime("berserk") < 300
-                    ?item.potion ! empty
-                        activate P
-                MoonJuggle("vigor sword +14", "vigor sword +15")
-                
+                // ?buffs.GetTime("berserk") < 300
+                //     ?item.potion ! empty
+                //         activate P
+                MoonJuggle(
+                ^"vigor sword +14",
+                ^"vigor sword +15")
         :?Dash()
             ?foe = "boo"
                 equipL aether wand +11
@@ -161,7 +169,7 @@ var PreviousKi = res.ki
             
             :
                 equip bardiche
-    
+
     :?loc = "boiling"
         ?foe = "boss"
             ?ai.paused
@@ -175,13 +183,21 @@ var PreviousKi = res.ki
                     ?buffs.GetTime("berserk") < 300
                         ?item.potion ! empty
                             activate P
+                    :?CanUse("mask")
+                        Use("mask")
                     equip heavy hammer
+            :?foe = "explode" //mine cart
+                equipL triskelion
+                ?foe.distance < 17
+                    ?foe.distance > 10
+                        equip dash
+                    :
+                        equipR mind
             :
                 equip aether crossbow
+
         :
-            ?Dash2()
-                ?foe.count > 6
-                    ?DoBladeScroll()
-                        return
-                :
-                    equip repeating crossbow
+            ?foe.count > 6
+                ?DoBladeScroll()
+                    return
+            equip repeating crossbow
