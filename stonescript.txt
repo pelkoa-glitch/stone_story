@@ -8,13 +8,22 @@
 
 // usable commands
 // foe state tracker
-// import UI/FoeStateTracker
+import UI/FoeStateTracker
 // foe tag 
 // >`0,10,@foe@
 // buffs string 
 //>`0,10,@buffs.string@
 
 var CA = import UI/ClickAbilities
+var Frozen = false
+
+?foe.debuffs.GetCount(
+^＂debuff_chill＂) >= 6
+    Frozen = true
+:?foe.debuffs.GetCount( 
+^＂debuff_chill＂) <= 0
+    Frozen = false
+
 
 ?item.left.state = 3
     equipL star
@@ -118,8 +127,15 @@ var PreviousKi = res.ki
 //    equipR mask
 
 
-?CA.RunNoDisplay()
-    ?pickup.distance < 10
+?CA.Run()
+    ?harvest.distance < 12
+        ?harvest = Boulder
+            equip shovel
+        :?harvest = Tree
+            equipL moon
+            equipR hatchet
+
+    :?pickup.distance < 10
         equipL triskelion
         equipR star
 
@@ -127,13 +143,20 @@ var PreviousKi = res.ki
         ?CanUse(＂quarterstaff＂)
             equip quarterstaff
             activate R
-        :?summon.count = 0 & CanUse(＂talisman_fire＂)
-            Use(＂fire talsman＂)
+        :?summon.count = 0 &
+        ^CanUse(＂talisman_aether＂)
+            Use(＂aether talisman＂)
+//        :?summon.count = 0 & 
+//        ^CanUse(＂talisman_fire＂)
+//            Use(＂fire talsman＂)
+        :?hp <= 52
+            equipL ouroboros
+            equipR compound shield
         :
             equipL trisk
             equipR compound shield
 
-    :?loc = ＂haunted＂
+    :?loc = ＂biba＂
         ?CryptAlive
             equip repeating crossbow
 
@@ -182,12 +205,13 @@ var PreviousKi = res.ki
                 Use(＂heavy_hammer＂)
             :?foe.state = 33
                 ?Dash2()
-                    ?buffs.GetTime(＂berserk＂) < 300
+                    ?buffs.GetTime(＂strength＂)
+                    ^< 300
                         ?item.potion ! empty
                             activate P          
-                    equip heavy hammer
+                    equip babooka
             :
-                equip aether crossbow
+                equip pelkoa
         :?foe = ＂explode＂ //mine cart
             equipL triskelion
             ?foe.distance < 17
@@ -200,4 +224,156 @@ var PreviousKi = res.ki
             ?foe.count > 6
                 ?DoBladeScroll()
                     return
-            equip repeating crossbow
+            equip glitch
+                                                
+    :?loc = ＂deadwood＂        
+        ?foe = Xyloalgia
+            ?Dash()
+                ?CanUse(＂mask＂)
+                    Use(＂mask＂)
+            :?foe.state=32 & foe.time=33
+                equipL mind stone
+                equipR triskelion
+            :?CanUse(＂quarterstaff＂)
+                equip quarterstaff
+                activate R
+            :?foe.distance < 12 &
+            ^ CanUse(＂bardiche＂)
+               Use(＂bardiche＂)
+            :
+               equip glitch
+        :?foe = ＂poena＂
+            equipL stone hammer +10
+            equipR stone hammer +9
+        :?foe.count > 6
+             ?DoBladeScroll()
+                 return
+        :
+            ?foe=immune_to_ranged
+               ?foe.distance<10 &
+               ^CanUse(＂heavy_hammer＂)
+                   Use(＂heavy_hammer＂)  
+               :
+                   equip heavy hammer
+            :?Dash()
+               equip glitch
+    :?loc=＂caustic_caves＂
+        ?foe=＂boss＂
+            equipL aether hammer +9
+            equipR fire hammer +9
+        :?foe.count > 6
+             ?DoBladeScroll()
+                 return
+        :
+            equip skelet
+                ?CanUse(＂skelet＂)
+                    Use(＂skelet＂)
+    :?loc=＂mushroom＂
+        ?foe=＂boss＂
+            equipL aether hammer +9
+            equipR fire hammer +9
+        :?foe.count > 6
+             ?DoBladeScroll()
+                 return
+        :
+            equip skelet
+                ?CanUse(＂skelet＂)
+                    Use(＂skelet＂)
+    :?loc=＂haunted＂
+        ?foe=＂boss＂
+            equipL aether hammer +9
+            equipR fire hammer +9
+        :?foe.count > 6
+             ?DoBladeScroll()
+                 return
+        :?foe=＂boo＂
+            equipL vigor wand
+            equipR compound shield
+        :
+            equip skelet
+                ?CanUse(＂skelet＂)
+                    Use(＂skelet＂)
+
+    :?loc=＂ridge＂
+        ?foe=＂yeti＂    
+            ?ai.paused
+                ?CanUse(＂quarterstaff＂)
+                    equip quarterstaff
+                    activate R
+                :?foe.distance < 12 &
+                ^CanUse(＂bardiche＂)
+                    Use(＂bardiche＂)
+                :?CanUse(＂heavy_hammer＂)
+                    Use(＂heavy_hammer＂)
+                :?CanUse(＂mask＂)
+                    Use(＂mask＂)
+
+            :   
+                ?foe.armor > 0 
+                    equip babooka
+                :?buffs.GetTime(＂berserk＂) < 30
+                    ?item.potion ! empty
+                        activate P
+                :?!Frozen
+                    ?Dash()
+                        MoonJuggle(
+                        ^＂fire sword +9＂,
+                        ^＂fire sword +11＂)
+                :   
+                    ?Dash()
+                        MoonJuggle(
+                            ^＂ice sword +10＂,
+                            ^＂fire sword +11＂)
+
+        :?foe = ＂ice_wall＂
+            equip fire crossbow
+        :?foe.count > 6 & CanUse(＂blade＂)
+             ?DoBladeScroll()
+                 return
+        :
+            ?Dash()
+                equipL big aether sword
+                equipR fire shield
+            :
+                equip fire crossbow
+
+ 
+    :?loc = temple
+        ?foe = ＂boss＂
+            ?foe.state = 112 & foe.time = 53
+                equipR mind
+
+            ?Dash()
+                ?CanUse(＂quarterstaff＂)
+                    equip quarterstaff
+                    activate R
+                :?foe.distance < 12 &
+                ^CanUse(＂bardiche＂)
+                    Use(＂bardiche＂)
+                :?CanUse(＂heavy_hammer＂)
+                    Use(＂heavy_hammer＂)         
+ 
+            ?buffs.GetTime(＂berserk＂) < 30
+                ?item.potion ! empty
+                    activate P
+            ?buffs.GetTime(＂berserk＂) > 0 
+                ?Dash()
+                    MoonJuggle(
+                    ^＂ice sword +10＂,
+                    ^＂fire sword +11＂)
+            :   
+                ?Dash()
+                    equipL ice sword +10
+                    equipR fire sword +11
+
+
+
+        :
+             ?foe.count > 6 & CanUse(＂blade＂)
+                 ?DoBladeScroll()
+                     return
+             ?Dash()
+                 equipL big aether sword
+                 equipR compound shield
+
+
