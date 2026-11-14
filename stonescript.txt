@@ -468,7 +468,7 @@ var PreviousKi = res.ki
                 equipL vigor sword dL
                 equipR compound shield
         
-        :?foe.distance <= 7
+            
             ?foe.buffs.string ! protection
             ^& buffs.string ! berserk 
             ^& buffs.string ! lucky 
