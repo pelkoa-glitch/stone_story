@@ -10,9 +10,9 @@
 ?debuffs.count > 0
     >`0,22,#ff5555,Debuffs: @debuffs.string@
 
-?foe
-    >`0,25,@foe@
-    >`0,23,Dist: @foe.distance@
+// ?foe
+//     >`0,25,@foe@
+//     >`0,23,Dist: @foe.distance@
 
 
 // usable commands
@@ -279,6 +279,7 @@ var PreviousKi = res.ki
                    equip heavy hammer
             :?Dash()
                equip glitch
+
     :?loc="caustic_caves"
         ?foe="boss"
             equipL vigor sword
@@ -429,68 +430,80 @@ var PreviousKi = res.ki
 
     :?loc = "rocky"
         ?foe = dysangelos
-            ?foe = phase1 & 
+            ?foe = "phase1" & 
             ^foe.state = 33 &
             ^foe.time >= 0 
+                >`0,20,#ff5555,AI SAATANA!!!
                 equipR mind
      
-            :?foe = phase3 & 
+            :?foe = "phase3" & 
             ^foe.state = 115 &
             ^foe.time >= 60
+                >`0,20,#ff5555,AI SAATANA!!!
                 equipR mind
             
-            ?foe = vigor & 
-            ^!(foe.buffs.string = adaptive 
-            ^& foe.buffs.string = poison)
-                equipL vigor sword dL
-                equipR poison sword dP
-            :?foe = aether & 
-            ^!(foe.buffs.string = adaptive 
-            ^& foe.buffs.string = vigor)
-                equipL vigor sword dL
-                equipR vigor wand D
-            :?foe = fire & 
-            ^!(foe.buffs.string = adaptive 
-            ^& foe.buffs.string = aether)
-                equipL vigor sword dL
-                equipR big aether sword dU
-            :?foe = ice & 
-            ^!(foe.buffs.string = adaptive 
-            ^& foe.buffs.string = fire)
-                equipL vigor sword dL
-                equipR fire sword D
-            :?foe = poison & 
-            ^!(foe.buffs.string = adaptive 
-            ^& foe.buffs.string = ice)
-                equipL vigor sword dL
-                equipR ice sword dI
-            :
-                equipL vigor sword dL
-                equipR compound shield
-        
-            
-            ?foe.buffs.string ! protection
+            :?foe.buffs.string ! protection
             ^& buffs.string ! berserk 
             ^& buffs.string ! lucky 
             ^& buffs.string ! strength
                 ?foe.debuffs.string ! damage 
                 ^& foe ! immune_to_debuff_damage 
+                    >`0,20,#ff5555,Applying poison
                     equipL poison sword dP
                     equipR mask
                 :?foe.debuffs.string ! dot 
+                    >`0,20,#ff5555,Applying burn
                     equipL fire sword dF
                     equipR mask
                 :?foe.debuffs.string ! "chill:6" 
-                ^& foe ! immune_to_debuff_chill 
+                ^& foe ! immune_to_debuff_chill
+                    >`0,20,#ff5555,Applying chill
                     equipL ice sword dI
                     equipR mask
                 :?foe.debuffs.string ! feeble 
+                    >`0,20,#ff5555,Applying feeble
                 ^& CanUse("mask")
                     Use("mask") 
 
             :?foe.armor > 0
+                >`0,20,#ff5555,Armor break
                 equip babooka
-                
+
+            :?foe = vigor & 
+            ^!(foe.buffs.string = adaptive 
+            ^& foe.buffs.string = poison)
+                >`0,21,#ffffff,Vigor
+                equipL vigor sword dL
+                equipR poison sword dP
+            :?foe = aether & 
+            ^!(foe.buffs.string = adaptive 
+            ^& foe.buffs.string = vigor)
+                >`0,21,#555555,Aether
+                equipL vigor sword dL
+                equipR vigor sword D
+            :?foe = fire & 
+            ^!(foe.buffs.string = adaptive 
+            ^& foe.buffs.string = aether)
+                >`0,21,#ff5555,Fire
+                equipL vigor sword dL
+                equipR big aether sword dU
+            :?foe = ice & 
+            ^!(foe.buffs.string = adaptive 
+            ^& foe.buffs.string = fire)
+                >`0,21,#5555ff,Ice
+                equipL vigor sword dL
+                equipR fire sword D
+            :?foe = poison & 
+            ^!(foe.buffs.string = adaptive 
+            ^& foe.buffs.string = ice)
+                >`0,21,#55ff55,Poison
+                equipL vigor sword dL
+                equipR ice sword dI
+            :
+                >`0,21,#555522,No element
+                equipL vigor sword dL
+                equipR fire hammer
+        
         :?foe.count > 6 & CanUse("blade")
              ?DoBladeScroll()
                  return
