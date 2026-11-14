@@ -443,27 +443,27 @@ var PreviousKi = res.ki
                 equipR mind
             
             :?foe.buffs.string ! protection
-            ^& buffs.string ! berserk 
-            ^& buffs.string ! lucky 
-            ^& buffs.string ! strength
-                ?foe.debuffs.string ! damage 
-                ^& foe ! immune_to_debuff_damage 
-                    >`0,20,#ff5555,Applying poison
-                    equipL poison sword dP
-                    equipR mask
-                :?foe.debuffs.string ! dot 
-                    >`0,20,#ff5555,Applying burn
-                    equipL fire sword dF
-                    equipR mask
-                :?foe.debuffs.string ! "chill:6" 
-                ^& foe ! immune_to_debuff_chill
-                    >`0,20,#ff5555,Applying chill
-                    equipL ice sword dI
-                    equipR mask
-                :?foe.debuffs.string ! feeble 
-                    >`0,20,#ff5555,Applying feeble
-                ^& CanUse("mask")
-                    Use("mask") 
+            ^&foe.debuffs.string ! damage 
+            ^& foe ! immune_to_debuff_damage 
+                >`0,20,#ff5555,Applying poison
+                equipL poison sword dP
+                equipR mask
+            :?foe.buffs.string ! protection
+            ^&foe.debuffs.string ! dot 
+                >`0,20,#ff5555,Applying burn
+                equipL fire sword dF
+                equipR mask
+            :?foe.buffs.string ! protection
+            ^&foe.debuffs.string ! "chill:6" 
+            ^& foe ! immune_to_debuff_chill
+                >`0,20,#ff5555,Applying chill
+                equipL ice sword dI
+                equipR mask
+            :?foe.buffs.string ! protection
+            ^&foe.debuffs.string ! feeble 
+            ^& CanUse("mask")
+                >`0,20,#ff5555,Applying feeble
+                Use("mask") 
 
             :?foe.armor > 0
                 >`0,20,#ff5555,Armor break
