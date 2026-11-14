@@ -6,8 +6,6 @@
 >o3,0,#888888,<
 >o-3,0,#888888,>
 
-?harvest
-    >`0,21,#5555ff,@harvest@
 
 ?debuffs.count > 0
     >`0,22,#ff5555,Debuffs: @debuffs.string@
@@ -28,11 +26,12 @@ var CA = import UI/ClickAbilities
 var Frozen = false
 var Harvesting = true
 
+
 ?foe.debuffs.GetCount(
-^＂debuff_chill＂) >= 6
+^"debuff_chill") >= 6
     Frozen = true
 :?foe.debuffs.GetCount( 
-^＂debuff_chill＂) <= 0
+^"debuff_chill") <= 0
     Frozen = false
 
 
@@ -47,23 +46,26 @@ var Harvesting = true
 func CanUse(weap)
     return item.GetCooldown(weap) <= 0 & item.CanActivate()
 
+
 func Use(weap)
     CA.UseR(weap)
+
 
 func InRange(num, min, max)
     return num >= min & num <= max
     
+
 func Dash()
     var FD = foe.distance
     
-    ?FD > 6 & CanUse(＂quarterstaff＂)
+    ?FD > 6 & CanUse("quarterstaff")
         equip quarterstaff
         activate R
         return false
     :?InRange(FD, 11, 16)
-        ?CanUse(＂bash＂)
+        ?CanUse("bash")
             equip bashing shield
-        :?CanUse(＂dash＂)
+        :?CanUse("dash")
             equip dashing shield
         :
             return true
@@ -71,19 +73,21 @@ func Dash()
     :
         return true
 
+
 func Dash2()
     var FD = foe.distance
     
     ?InRange(FD, 11, 16)
-        ?CanUse(＂bash＂)
-            Use(＂bash＂)
-        :?CanUse(＂dash＂)
-            Use(＂dash＂)
+        ?CanUse("bash")
+            Use("bash")
+        :?CanUse("dash")
+            Use("dash")
         :
             return true
         return false
     :
         return true
+
 
 func MoonJuggle(Weap1, Weap2)
     ?totaltime % 4 = 0
@@ -101,8 +105,9 @@ func MoonJuggle(Weap1, Weap2)
 
 var blade_frame = 0
 
+
 func DoBladeScroll()
-    var cdb = item.GetCooldown(＂blade＂)
+    var cdb = item.GetCooldown("blade")
     ? cdb <= 0 & blade_frame <= 0
         blade_frame = 1
         screen.Next()
@@ -124,31 +129,24 @@ func DoBladeScroll()
 
 var CryptAlive = false
 var PreviousKi = res.ki
-?foe = ＂big_tomb＂
+?foe = "big_tomb"
     CryptAlive = true 
     PreviousKi = res.ki
 ?PreviousKi < res.ki
     CryptAlive = false
 
 
-//?buffs.GetTime(＂berserk＂) < 300
-//    ?item.potion ! empty
-//        activate P
-//    equipL vigor wand +10
-//    equipR mask
-
-
 ?CA.RunNoDisplay()
     ?Harvesting & harvest.distance < 12
         ?harvest = Boulder
             equip shovel
-            ?CanUse(＂shovel＂)
-                Use(＂shovel＂)  
+            ?CanUse("shovel")
+                Use("shovel")  
         :?harvest = Tree
             equipL moon
             equipR hatchet
-            ?CanUse(＂hatchet＂)
-                Use(＂hatchet＂) 
+            ?CanUse("hatchet")
+                Use("hatchet") 
 
 
     :?pickup.distance < 10
@@ -156,15 +154,15 @@ var PreviousKi = res.ki
         equipR star
 
     :?foe.distance > 23
-        ?CanUse(＂quarterstaff＂)
+        ?CanUse("quarterstaff")
             equip quarterstaff
             activate R
         :?summon.count = 0 &
-        ^CanUse(＂talisman_aether＂)
-            Use(＂aether talisman＂)
+        ^CanUse("talisman_aether")
+            Use("aether talisman")
         :?summon.count = 0 & 
-        ^CanUse(＂talisman_fire＂)
-            Use(＂fire talsman＂)
+        ^CanUse("talisman_fire")
+            Use("fire talsman")
         :?hp <= 52
             equipL ouroboros
             equipR compound shield
@@ -172,38 +170,38 @@ var PreviousKi = res.ki
             equipL trisk
             equipR compound shield
 
-    :?loc = ＂haunted＂
+    :?loc = "haunted"
         ?CryptAlive
             equip repeating crossbow
 
-        :?foe = ＂phase1＂
+        :?foe = "phase1"
             ?Dash2()
-                ?CanUse(＂mask＂)
-                    Use(＂mask＂)
+                ?CanUse("mask")
+                    Use("mask")
                 equipL fire sword
                 equipR ice sword
 
-        :?foe = ＂phase2＂
+        :?foe = "phase2"
             ?ai.paused
-                ?CanUse(＂quarterstaff＂)
+                ?CanUse("quarterstaff")
                     equip quarterstaff
                     activate R
-                :?foe.distance < 12 & CanUse(＂bardiche＂)
-                    Use(＂bardiche＂)
-                :?CanUse(＂heavy_hammer＂)
-                    Use(＂heavy_hammer＂) // raw damage one
+                :?foe.distance < 12 & CanUse("bardiche")
+                    Use("bardiche")
+                :?CanUse("heavy_hammer")
+                    Use("heavy_hammer")
             :   
-                ?buffs.GetTime(＂berserk＂) < 30
+                ?buffs.GetTime("berserk") < 30
                     ?item.potion ! empty
                         activate P
                     MoonJuggle(
-                    ^＂fire sword＂,
-                    ^＂ice sword＂)
+                    ^"fire sword",
+                    ^"ice sword")
                 :
                     equipL fire sword
                     equipR ice sword
         :?Dash()
-            ?foe = ＂boo＂
+            ?foe = "boo"
                 equip prevention staff
                
             
@@ -214,24 +212,24 @@ var PreviousKi = res.ki
             :
                 equip bardiche
 
-    :?loc = ＂boiling＂
-        ?foe = ＂bronze_guardian＂
+    :?loc = "boiling"
+        ?foe = "bronze_guardian"
             ?ai.paused
                 equipR compound shield
             :?foe.state = 32 & foe.time = 33
                 equipR mind
-            :?CanUse(＂heavy_hammer＂)
-                Use(＂heavy_hammer＂)
+            :?CanUse("heavy_hammer")
+                Use("heavy_hammer")
             :?foe.state = 33
                 ?Dash2()
-                    ?buffs.GetTime(＂strength＂)
+                    ?buffs.GetTime("strength")
                     ^< 300
                         ?item.potion ! empty
                             activate P          
                     equip babooka
             :
                 equip pelkoa
-        :?foe = ＂explode＂
+        :?foe = "explode"
             equipL triskelion
             ?foe.distance < 17
                 ?foe.distance > 10
@@ -246,27 +244,27 @@ var PreviousKi = res.ki
             equip glitch
             
                                                 
-    :?loc = ＂deadwood＂        
+    :?loc = "deadwood"        
         ?foe = Xyloalgia
             ?Dash()
-                //?CanUse(＂mask＂)
-                //    Use(＂mask＂)
+                //?CanUse("mask")
+                //    Use("mask")
                 >\o/
             ?foe.state=32 & foe.time=33
                 equipL mind stone
                 equipR triskelion
-            :?CanUse(＂quarterstaff＂)
+            :?CanUse("quarterstaff")
                 equip quarterstaff
                 activate R
             :?foe.distance < 12 &
-            ^ CanUse(＂bardiche＂)
-               Use(＂bardiche＂)
+            ^ CanUse("bardiche")
+               Use("bardiche")
             :
                 ?Dash()
                      equipL ice sword +10
                      equipR fire sword +11
 
-        :?foe = ＂poena＂
+        :?foe = "poena"
             equipL stone hammer +3
             equipR stone hammer +5
         :?foe.count > 6
@@ -275,14 +273,14 @@ var PreviousKi = res.ki
         :
             ?foe=immune_to_ranged
                ?foe.distance<10 &
-               ^CanUse(＂heavy_hammer＂)
-                   Use(＂heavy_hammer＂)  
+               ^CanUse("heavy_hammer")
+                   Use("heavy_hammer")  
                :
                    equip heavy hammer
             :?Dash()
                equip glitch
-    :?loc=＂caustic_caves＂
-        ?foe=＂boss＂
+    :?loc="caustic_caves"
+        ?foe="boss"
             equipL vigor sword
             equipR ice sword
 
@@ -290,18 +288,14 @@ var PreviousKi = res.ki
              ?DoBladeScroll()
                  return
         :
-          //  equipL big aether sword
-          //  equipR ice shield
-            ?Dash()
-                equip eternity staff
-                ?CanUse(＂eternity staff＂)
-                    Use(＂eternity staff＂)
+           equipL big aether sword
+           equipR ice shield
 
            
 
                    
-    :?loc=＂mushroom＂
-        ?foe=＂boss＂
+    :?loc="mushroom"
+        ?foe="boss"
             equipL stone hammer +5
             equipR stone hammer +3
         :?foe.count > 6
@@ -309,10 +303,10 @@ var PreviousKi = res.ki
                  return
         :
             equip berserker staff
-                ?CanUse(＂berserker staff＂)
-                    Use(＂berserker staff＂)
-    :?loc=＂haunted＂
-        ?foe=＂boss＂
+                ?CanUse("berserker staff")
+                    Use("berserker staff")
+    :?loc="haunted"
+        ?foe="boss"
             equipL stone hammer +3
             equipR stone hammer +5
 
@@ -320,27 +314,27 @@ var PreviousKi = res.ki
         :?foe.count > 6
              ?DoBladeScroll()
                  return
-        :?foe=＂boo＂
+        :?foe="boo"
             equipL vigor wand
             equipR compound shield
         :
             equip skelet
-                ?CanUse(＂skelet＂)
-                    Use(＂skelet＂)
+                ?CanUse("skelet")
+                    Use("skelet")
 
-    :?loc=＂ridge＂
-        ?foe=＂yeti＂    
+    :?loc="ridge"
+        ?foe="yeti"    
             ?foe.armor > 0
-                ?CanUse(＂quarterstaff＂)
+                ?CanUse("quarterstaff")
                     equip quarterstaff
                     activate R
                 :?foe.distance < 12 &
-                ^CanUse(＂bardiche＂)
-                    Use(＂bardiche＂)
-                :?CanUse(＂heavy_hammer＂)
-                    Use(＂heavy_hammer＂)
-                :?CanUse(＂mask＂)
-                    Use(＂mask＂)
+                ^CanUse("bardiche")
+                    Use("bardiche")
+                :?CanUse("heavy_hammer")
+                    Use("heavy_hammer")
+                :?CanUse("mask")
+                    Use("mask")
 
             :?foe.state = 133
                 equip fire crossbow
@@ -348,20 +342,20 @@ var PreviousKi = res.ki
                 ?foe.state = 1 &
                 ^foe.time < 140 &
                 ^foe.time > 130 &
-                ^buffs.GetTime(＂luck＂) < 1
-                    ?CanUse(＂infernal staff＂)
-                        Use(＂infernal staff＂)
+                ^buffs.GetTime("luck") < 1
+                    ?CanUse("infernal staff")
+                        Use("infernal staff")
                     ?item.potion ! empty
                         activate P
                     
 
                 ?foe.distance <= 5 &
                 ^debuffs.GetCount(
-                ^＂debuff_yeti_chill＂) = 0
+                ^"debuff_yeti_chill") = 0
                     >`0,21,#55ff55,MOON
                         MoonJuggle(
-                        ^＂ice sword＂,
-                        ^＂fire sword +17＂)
+                        ^"ice sword",
+                        ^"fire sword +17")
                 : 
                     >`0,21,#ff5555,Not MOON
                     ?Frozen
@@ -372,15 +366,15 @@ var PreviousKi = res.ki
                         ?Dash()
                             equipL ice sword
                             equipR vigor sword
-        :?foe = ＂giant ice＂
+        :?foe = "giant ice"
             
             ?Dash()
                 equipL stone hammer +7
                 equipR fire sword +17
             
-        :?foe = ＂ice_wall＂
+        :?foe = "ice_wall"
             equip fire crossbow
-        :?foe.count > 3 & CanUse(＂blade＂)
+        :?foe.count > 3 & CanUse("blade")
              ?DoBladeScroll()
                  return
         :
@@ -394,46 +388,46 @@ var PreviousKi = res.ki
 
  
     :?loc = temple
-        ?foe = ＂nagaraja＂
+        ?foe = "nagaraja"
             ?foe.state = 112 & foe.time = 60
                 equipR mind
 
             ?Dash()
-                ?CanUse(＂quarterstaff＂)
+                ?CanUse("quarterstaff")
                     equip quarterstaff
                     activate R
                 :?foe.distance < 12 &
-                ^CanUse(＂bardiche＂)
-                    Use(＂bardiche＂)
-                :?CanUse(＂heavy_hammer＂)
-                    Use(＂heavy_hammer＂)         
+                ^CanUse("bardiche")
+                    Use("bardiche")
+                :?CanUse("heavy_hammer")
+                    Use("heavy_hammer")         
  
-            ?buffs.GetTime(＂berserk＂) < 30
+            ?buffs.GetTime("berserk") < 30
                 ?item.potion ! empty
                     activate P
-            ?buffs.GetTime(＂berserk＂) > 0 
+            ?buffs.GetTime("berserk") > 0 
                 ?Dash()
                     MoonJuggle(
-                    ^＂ice sword +10＂,
-                    ^＂fire sword +17＂)
+                    ^"ice sword +10",
+                    ^"fire sword +17")
             :   
                 ?Dash()
                     equipL ice sword +10
                     equipR fire sword +17
 
 
-        :?foe = ＂acronian cultist＂
+        :?foe = "acronian cultist"
             equipL stone hammer +5
             equipR stone hammer +3
         :
-             ?foe.count > 6 & CanUse(＂blade＂)
+             ?foe.count > 6 & CanUse("blade")
                  ?DoBladeScroll()
                      return
              ?Dash()
                  equipL big aether sword
                  equipR ice shield
 
-    :?loc = ＂rocky＂
+    :?loc = "rocky"
         ?foe = dysangelos
             ?foe = phase1 & 
             ^foe.state = 33 &
@@ -443,20 +437,67 @@ var PreviousKi = res.ki
             :?foe = phase3 & 
             ^foe.state = 115 &
             ^foe.time >= 60
-                dquipR mind
+                equipR mind
             
-            :?foe = poison
+            ?foe = vigor & 
+            ^!(foe.buffs.string = adaptive 
+            ^& foe.buffs.string = poison)
+                equipL vigor sword dL
+                equipR poison sword dP
+            :?foe = aether & 
+            ^!(foe.buffs.string = adaptive 
+            ^& foe.buffs.string = vigor)
+                equipL vigor sword dL
+                equipR vigor wand D
+            :?foe = fire & 
+            ^!(foe.buffs.string = adaptive 
+            ^& foe.buffs.string = aether)
+                equipL vigor sword dL
+                equipR big aether sword dU
+            :?foe = ice & 
+            ^!(foe.buffs.string = adaptive 
+            ^& foe.buffs.string = fire)
+                equipL vigor sword dL
+                equipR fire sword D
+            :?foe = poison & 
+            ^!(foe.buffs.string = adaptive 
+            ^& foe.buffs.string = ice)
+                equipL vigor sword dL
+                equipR ice sword dI
+            :
+                equipL vigor sword dL
+                equipR compound shield
+        
+        :?foe.distance <= 7
+            ?foe.buffs.string ! protection
+            ^& buffs.string ! berserk 
+            ^& buffs.string ! lucky 
+            ^& buffs.string ! strength
+                ?foe.debuffs.string ! damage 
+                ^& foe ! immune_to_debuff_damage 
+                    equipL poison sword dP
+                    equipR mask
+                :?foe.debuffs.string ! dot 
+                    equipL fire sword dF
+                    equipR mask
+                :?foe.debuffs.string ! "chill:6" 
+                ^& foe ! immune_to_debuff_chill 
+                    equipL ice sword dI
+                    equipR mask
+                :?foe.debuffs.string ! feeble 
+                ^& CanUse("mask")
+                    Use("mask") 
 
-            :?foe = vigor
+            :?foe.armor > 0
+                equip babooka
+                
+        :?foe.count > 6 & CanUse("blade")
+             ?DoBladeScroll()
+                 return
+        :
+            >`0,21,#55ff55,MOBS
+            ?Dash()
+                equipL stone hammer +7
+                equipR fire sword +17
 
-            :?foe = aether
-
-            :?foe = fire
-
-            :?foe = ice
-
-            :?foe = 
-
-
- 
 
